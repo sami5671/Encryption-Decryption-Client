@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 // import 'react-tooltip/dist/react-tooltip.css'
-
 import UseAuth from "./../Hooks/UseAuth";
 import { Tooltip } from "react-tooltip";
-import Container from "../Container";
 
 const Navbar = () => {
   const { user, logOut } = UseAuth();
 
-  //   console.log(user);
+  console.log(user);
   const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {

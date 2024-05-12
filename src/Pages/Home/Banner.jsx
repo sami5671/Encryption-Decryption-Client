@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import banner from "../../assets/banenr4.jpg";
 const Banner = () => {
   return (
@@ -18,9 +19,11 @@ const Banner = () => {
             techniques. Join us to learn more about data security and privacy.
           </p>
         </div>
-        <button className="text-black font-bold text-xl hover:bg-purple-500 hover:text-white mt-12 rounded-full px-12 py-3 bg-white">
-          Start Now
-        </button>
+        <Link to="/encryptionDecryptionPage">
+          <button className="text-black font-bold text-xl hover:bg-purple-500 hover:text-white mt-12 rounded-full px-12 py-3 bg-white">
+            Start Now
+          </button>
+        </Link>
       </div>
     </div>
   );
