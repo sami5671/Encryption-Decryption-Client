@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosSecure from ".";
 
 export const imageUpload = async (image) => {
   const formData = new FormData();
@@ -7,5 +8,11 @@ export const imageUpload = async (image) => {
     `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
     formData
   );
+  return data;
+};
+
+// send encrypted data to database
+export const postEncryptedData = async (encryptedData) => {
+  const { data } = await axiosSecure.post("/encryptedData", encryptedData);
   return data;
 };
