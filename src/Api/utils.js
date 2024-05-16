@@ -16,3 +16,9 @@ export const postEncryptedData = async (encryptedData) => {
   const { data } = await axiosSecure.post("/encryptedData", encryptedData);
   return data;
 };
+
+// get encrypted data from database
+export const getEncryptedData = async () => {
+  const { data } = await axiosSecure.get("/encryptedData");
+  return data;
+};

@@ -26,7 +26,7 @@ export const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: "/encryptionDecryptionPage",
+        path: "/encryptionPage",
         element: <EncryptionPage />,
       },
       {
