@@ -3,11 +3,9 @@ import "react-tabs/style/react-tabs.css";
 import UseAuth from "./../../Hooks/UseAuth";
 import { useState } from "react";
 import forge from "node-forge";
-import { postEncryptedData } from "../../Api/utils";
-import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { saveAs } from "file-saver";
 
-// =================================================================
 const EncryptionPage = () => {
   const { user } = UseAuth();
 
@@ -15,86 +13,70 @@ const EncryptionPage = () => {
   const [publicKeyPem, setPublicKeyPem] = useState("");
   const [encryptedText, setEncryptedText] = useState("");
   const [inputText, setInputText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // const [clickEncrypt, setClickEncrypt] = useState(true);
-  // const [clickDecrypt, setClickDecrypt] = useState(false);
-
-  const { privateKey, publicKey } = forge.pki.rsa.generateKeyPair(2048);
-
-  // ============================Function to handle key generation============================
-  const generateKeysAndEncrypt = () => {
-    // Generate RSA key pair
-    // Convert keys to PEM format
-    const privateKeyPem = forge.pki.privateKeyToPem(privateKey);
-    const publicKeyPem = forge.pki.publicKeyToPem(publicKey);
-
-    // Update state
-    setPrivateKeyPem(privateKeyPem);
-    setPublicKeyPem(publicKeyPem);
+  const handleFileUpload = (event, setKey) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setKey(e.target.result);
+    };
+    reader.readAsText(file);
   };
-  // ====================================================================================================
 
-  // =====================================for encrypt the message and send to database============================================================
-  const handelEncryptText = async (event) => {
+  const handleEncryptText = async (event) => {
     event.preventDefault();
     const form = event.target;
     const userText = form.userText.value;
 
-    // Encrypt the input text
-    const encrypted = publicKey.encrypt(userText, "RSA-OAEP");
-    const encodedEncrypted = forge.util.encode64(encrypted);
-
-    // Update state with the encrypted text
-    setEncryptedText(encodedEncrypted);
-    setInputText(userText);
-
-    // Construct encryptedData with the updated state values
-    const encryptedData = {
-      email: user.email,
-      displayName: user.displayName,
-      privateKey: privateKeyPem,
-      encryptedText: encodedEncrypted,
-    };
-
     try {
-      // Post encryptedData to MongoDB
-      const result = await postEncryptedData(encryptedData);
-
-      if (result.acknowledged) {
-        toast.success("Successfully Encrypted and Posted to MongoDB!");
-      } else {
-        toast.error("Failed to post encrypted data to MongoDB");
+      // Validate input keys
+      if (!publicKeyPem || !privateKeyPem) {
+        setErrorMessage("Both public and private keys must be provided.");
+        return;
       }
+
+      // Parse the PEM formatted keys
+      const receiverPublicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+      const senderPrivateKey = forge.pki.privateKeyFromPem(privateKeyPem);
+
+      // Encrypt the input text with the receiver's public key
+      const encrypted = receiverPublicKey.encrypt(userText, "RSA-OAEP");
+      const encodedEncrypted = forge.util.encode64(encrypted);
+
+      // Update state with the encrypted text
+      setEncryptedText(encodedEncrypted);
+      setInputText(userText);
+      setErrorMessage(""); // Clear any previous error messages
     } catch (error) {
-      console.error("Error posting encrypted data:", error);
-      toast.error("Error posting encrypted data to MongoDB");
+      setErrorMessage("Invalid PEM formatted message. Please check the keys.");
+      console.error("Error during encryption:", error);
     }
   };
 
-  // console.log(inputText, encryptedText);
-
-  // const clickEncrypt = () => {
-  //   setClickEncrypt(true);
-  //   setClickDecrypt(false);
-  // };
-
-  // const clickDecrypt = () => {
-  //   setClickEncrypt(false);
-  //   setClickDecrypt(true);
-  // };
+  const handleDownloadEncryptedText = () => {
+    const blob = new Blob([encryptedText], {
+      type: "text/plain;charset=utf-8",
+    });
+    saveAs(blob, "encrypted_message.txt");
+  };
 
   return (
     <>
       <Container>
         <div className="flex items-center justify-center">
+          <Link to="/generateKeys">
+            <button className="border-2 bg-green-500 text-white font-bold px-2 py-2 hover:bg-white hover:text-black">
+              Generate Keys
+            </button>
+          </Link>
           <Link to="/encryptionPage">
-            <button className="border-2 bg-purple-900 text-white font-bold px-2 py-2">
+            <button className="border-2 bg-purple-900 text-white font-bold px-2 py-2 hover:bg-white hover:text-black">
               Encrypt
             </button>
           </Link>
           <Link to="/decryptionPage">
-            <button className="border-2 bg-purple-400 text-white font-bold px-2 py-2">
+            <button className="border-2 bg-purple-400 text-white font-bold px-2 py-2 hover:bg-white hover:text-black">
               Decrypt
             </button>
           </Link>
@@ -103,57 +85,51 @@ const EncryptionPage = () => {
           <h2 className="text-5xl text-center font-bold mb-14 text-purple-500">
             Encrypt your Message
           </h2>
-
-          <div className="flex flex-col md:flex-row gap-10">
-            <input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={user?.displayName}
-              className="input input-bordered w-full"
-              required
-              readOnly
-            />
-            <input
-              type="text"
-              value={user?.email}
-              placeholder="Name"
-              name="Name"
-              className="input input-bordered w-full"
-              required
-              readOnly
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-10 mt-12">
-            <textarea
-              placeholder="Public Key"
-              className="input input-bordered w-full lg:h-[150px]"
-              defaultValue={publicKeyPem}
-              readOnly
-            />
-            <textarea
-              placeholder="Private Key"
-              defaultValue={privateKeyPem}
-              className="input input-bordered w-full lg:h-[150px]"
-              readOnly
-            />
-          </div>
-
-          <div className="flex items-center justify-center mt-12">
-            <button
-              onClick={generateKeysAndEncrypt}
-              className="border-2 rounded-lg px-2 py-2 bg-purple-500 hover:bg-slate-300 text-white hover:text-black font-bold"
-            >
-              Generate Keys
-            </button>
-          </div>
-
-          {/* get the user message input */}
-          <form className="space-y-10 mt-12" onSubmit={handelEncryptText}>
+          <form className="space-y-10 mt-12" onSubmit={handleEncryptText}>
+            <div className="flex flex-col md:flex-row gap-10">
+              <input
+                type="email"
+                placeholder="Email"
+                name="email"
+                value={user?.displayName}
+                className="input input-bordered w-full"
+                required
+                readOnly
+              />
+              <input
+                type="text"
+                value={user?.email}
+                placeholder="Name"
+                name="Name"
+                className="input input-bordered w-full"
+                required
+                readOnly
+              />
+            </div>
+            <div className="flex flex-col md:flex-row gap-10 mt-12">
+              <div className="w-full lg:h-[150px]">
+                <label className="block mb-2">Receiver Public Key</label>
+                <input
+                  type="file"
+                  accept=".pem"
+                  className="input input-bordered w-full lg:h-[120px] bg-purple-200 text-white cursor-pointer"
+                  onChange={(e) => handleFileUpload(e, setPublicKeyPem)}
+                />
+              </div>
+              <div className="w-full lg:h-[150px]">
+                <label className="block mb-2">Sender Private Key</label>
+                <input
+                  type="file"
+                  accept=".pem"
+                  className="input input-bordered w-full lg:h-[120px] bg-purple-200 text-white cursor-pointer"
+                  onChange={(e) => handleFileUpload(e, setPrivateKeyPem)}
+                />
+              </div>
+            </div>
             <div className="flex flex-col md:flex-row gap-10">
               <textarea
                 name="userText"
-                placeholder="Write your message............."
+                placeholder="Write your message..."
                 className="input input-bordered w-full lg:h-[150px]"
                 required
               />
@@ -163,6 +139,7 @@ const EncryptionPage = () => {
                 value={encryptedText}
               />
             </div>
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <input
               type="submit"
               value="Encrypt Message"
@@ -170,6 +147,16 @@ const EncryptionPage = () => {
               required
             />
           </form>
+          {encryptedText && (
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleDownloadEncryptedText}
+                className="btn btn-primary"
+              >
+                Download Encrypted Text
+              </button>
+            </div>
+          )}
         </div>
       </Container>
     </>

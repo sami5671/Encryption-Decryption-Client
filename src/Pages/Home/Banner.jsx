@@ -19,7 +19,7 @@ const Banner = () => {
             techniques. Join us to learn more about data security and privacy.
           </p>
         </div>
-        <Link to="/encryptionPage">
+        <Link to="/generateKeys">
           <button className="text-black font-bold text-xl hover:bg-purple-500 hover:text-white mt-12 rounded-full px-12 py-3 bg-white">
             Start Now
           </button>
