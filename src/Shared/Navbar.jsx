@@ -7,7 +7,7 @@ import { Tooltip } from "react-tooltip";
 const Navbar = () => {
   const { user, logOut } = UseAuth();
 
-  console.log(user);
+  // console.log(user);
   const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {
@@ -99,12 +99,9 @@ const Navbar = () => {
           </svg>
         </label>
         {user && user.photoURL ? (
-          <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-            <Tooltip className="" anchorSelect=".my-img" place="top">
-              {user.displayName}
-            </Tooltip>
+          <label tabIndex={0} className="" data-tip={user.displayName}>
             <div className="w-10 rounded-full">
-              <img className="my-img" src={user.photoURL} alt="" />
+              <img src={user.photoURL} alt="" className="rounded-full" />
             </div>
           </label>
         ) : (
@@ -113,19 +110,19 @@ const Navbar = () => {
         {user ? (
           <button
             onClick={handleSignOut}
-            className="btn bg-purple-500 text-white font-bold text-[18px] ml-2"
+            className="border-2 border-dotted hover:bg-red-500 hover:text-white px-4 py-1 bg-purple-300 ml-6 text-white font-bold"
           >
             Logout
           </button>
         ) : (
           <div className="flex">
             <Link to="/login">
-              <button className="btn bg-purple-500 text-white font-bold text-[18px] ml-2">
+              <button className="border-2 border-dotted hover:bg-purple-500 hover:text-white px-4 py-1 bg-purple-300 ml-4 text-white font-bold">
                 Login
               </button>
             </Link>
             <Link to="/register">
-              <button className="btn bg-purple-500 text-white font-bold text-[18px] ml-2">
+              <button className="border-2 border-dotted hover:bg-green-400 hover:text-white px-4 py-1 bg-purple-300 ml-2 text-white font-bold">
                 Register
               </button>
             </Link>

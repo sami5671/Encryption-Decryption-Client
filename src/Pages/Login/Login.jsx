@@ -10,12 +10,12 @@ import UseAuth from "../../Hooks/UseAuth";
 const Login = () => {
   //================================================================
 
-  // =================================================================
+  // ===============================================================
   const { signIn, signInWithGoogle, loading } = UseAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state?.from?.pathname || "/";
-  // console.log(from);
+
   // form submit handler
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,8 +27,6 @@ const Login = () => {
       // User Login
       const result = await signIn(email, password);
 
-      //5. get token
-      //   await getToken(result?.user?.email);
       navigate(from, { replace: true });
       toast.success("Login Successful");
       // ----------------------------------------------------------------
@@ -43,14 +41,10 @@ const Login = () => {
     try {
       // user registration with google
       const result = await signInWithGoogle();
-      // console.log(result);
 
       // save user data in database
       const dbResponse = await saveUser(result?.user);
-      // console.log(dbResponse);
 
-      //5. get token
-      //   await getToken(result?.user?.email);
       navigate(from, { replace: true });
       toast.success("Login Successful");
       // ----------------------------------------------------------------
@@ -62,13 +56,13 @@ const Login = () => {
   return (
     <>
       <Container>
-        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-12">
-          <div className="lg:border-r-2">
-            <div className="min-h-screen shadow-sm ">
+        <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-12">
+          <div className="">
+            <div className="min-h-screen shadow-xl ">
               <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 text-gray-900">
                 <div className="mb-8">
-                  <h1 className="my-3 text-4xl font-bold bg-gradient-to-br from-purple-600 to-green-300 text-transparent bg-clip-text">
-                    Welcome To <br /> Dream Car
+                  <h1 className="my-3 text-4xl font-bold bg-gradient-to-br from-purple-600 to-green-400 text-transparent bg-clip-text">
+                    Welcome To <br /> Encrypto Message
                   </h1>
                   <p className="text-sm text-gray-400">
                     Sign in to access your account
@@ -136,45 +130,43 @@ const Login = () => {
                     Forgot password?
                   </button>
                 </div>
+                <div className="flex items-center pt-4 space-x-1">
+                  <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
+                  <p className="px-3 text-sm dark:text-gray-400 font-semibold">
+                    Login with social accounts
+                  </p>
+                  <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
+                </div>
+                <div
+                  onClick={handleGoogleSignIn}
+                  className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer hover:bg-black hover:text-white"
+                >
+                  <FcGoogle size={32} />
+
+                  <p>Continue with Google</p>
+                </div>
+                <div className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer hover:bg-black hover:text-white">
+                  <FaGithub size={32} />
+
+                  <p>Continue with GitHub</p>
+                </div>
+                <p className="px-6 text-sm text-center text-gray-400">
+                  Don't have an account?
+                  <Link
+                    to="/register"
+                    className="hover:underline hover:text-purple-500 text-gray-600"
+                  >
+                    Sign Up
+                  </Link>
+                </p>
+                <p>
+                  <span className="text-[12px] mr-1">For Help:</span>
+                  <span className="text-slate-500 text-[10px] font-bold underline">
+                    samialam5671@gmail.com
+                  </span>
+                </p>
               </div>
             </div>
-          </div>
-
-          <div>
-            <img
-              src="https://i.ibb.co/vsnxDhT/login.jpg"
-              alt=""
-              className="lg:w-[750px] lg:h-[440px]"
-            />
-            <div className="flex items-center pt-4 space-x-1">
-              <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
-              <p className="px-3 text-sm dark:text-gray-400 font-semibold">
-                Login with social accounts
-              </p>
-              <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
-            </div>
-            <div
-              onClick={handleGoogleSignIn}
-              className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer hover:bg-black hover:text-white"
-            >
-              <FcGoogle size={32} />
-
-              <p>Continue with Google</p>
-            </div>
-            <div className="flex justify-center items-center space-x-2 border m-3 p-2 border-gray-300 border-rounded cursor-pointer hover:bg-black hover:text-white">
-              <FaGithub size={32} />
-
-              <p>Continue with GitHub</p>
-            </div>
-            <p className="px-6 text-sm text-center text-gray-400">
-              Don't have an account?
-              <Link
-                to="/register"
-                className="hover:underline hover:text-purple-500 text-gray-600"
-              >
-                Sign Up
-              </Link>
-            </p>
           </div>
         </div>
       </Container>

@@ -7,7 +7,6 @@ import Login from "../Pages/Login/Login";
 import EncryptionPage from "../Pages/EncryptionPage/EncryptionPage";
 import DecryptionPage from "../Pages/DecryptionPage/DecryptionPage";
 import PrivateRoute from "./PrivateRoute";
-import EncryptDecrypt from "../Pages/Testing/EncryptDecrypt";
 import KeyGenerate from "../Pages/KeyGenerationPage/KeyGenerate";
 
 export const router = createBrowserRouter([
@@ -46,7 +45,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/generateKeys",
-        element: <KeyGenerate />,
+        element: (
+          <PrivateRoute>
+            <KeyGenerate />
+          </PrivateRoute>
+        ),
       },
     ],
   },

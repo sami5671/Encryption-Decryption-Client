@@ -137,7 +137,9 @@ const Register = () => {
                   <h1 className="my-3 text-4xl font-bold bg-gradient-to-br from-purple-600 to-green-200 text-transparent bg-clip-text">
                     Sign Up
                   </h1>
-                  <p className="text-sm text-gray-400">Welcome to Dream Car</p>
+                  <p className="text-sm text-gray-400">
+                    Welcome to Encrypto Message
+                  </p>
                 </div>
                 <form
                   onSubmit={handleSubmit}
