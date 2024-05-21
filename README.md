@@ -1,4 +1,8 @@
+# Encryption-Decryption Web App
+
 This is a web application that allows you to securely send and receive encrypted messages using public-key cryptography. This ensures that only the intended recipient can read the messages.
+
+## Live Link: https://nsc-encryption-decryption.web.app
 
 ## How it Works
 
