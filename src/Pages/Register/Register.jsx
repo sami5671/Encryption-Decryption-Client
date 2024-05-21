@@ -40,15 +40,13 @@ const Register = () => {
 
       // user registration
       const result = await createUser(email, password);
-      // console.log(result);
+
       // save username and profile photo
       await updateUserProfile(name, imageData?.data?.display_url);
 
       // save user data in database
       const dbResponse = await saveUser(result?.user);
-      // console.log(dbResponse);
-      //5. get token
-      //   await getToken(result?.user?.email);
+
 
       navigate(from, { replace: true });
       setUploadButtonText("Upload Profile Picture");
@@ -65,14 +63,10 @@ const Register = () => {
     try {
       // user registration with google
       const result = await signInWithGoogle();
-      // console.log(result);
 
       // save user data in database
       const dbResponse = await saveUser(result?.user);
-      // console.log(dbResponse);
 
-      //5. get token
-      //   await getToken(result?.user?.email);
       navigate(from, { replace: true });
       toast.success("SignUp Successful");
       // ----------------------------------------------------------------
