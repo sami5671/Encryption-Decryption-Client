@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import banner from "../../assets/banenr4.jpg";
+
 const Banner = () => {
   return (
     <div className="relative bg-cover bg-center h-80 md:h-96 lg:h-screen flex items-center justify-center">

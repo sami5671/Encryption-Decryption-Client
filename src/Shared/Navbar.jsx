@@ -110,20 +110,15 @@ const Navbar = () => {
         {user ? (
           <button
             onClick={handleSignOut}
-            className="border-2 border-dotted hover:bg-red-500 hover:text-white px-4 py-1 bg-purple-300 ml-6 text-white font-bold"
+            className="border-2 hover:border-dotted hover:bg-red-500 hover:text-white px-4 py-1 bg-black rounded-full ml-6 text-white font-bold"
           >
             Logout
           </button>
         ) : (
           <div className="flex">
             <Link to="/login">
-              <button className="border-2 border-dotted hover:bg-purple-500 hover:text-white px-4 py-1 bg-purple-300 ml-4 text-white font-bold">
+              <button className="border-2  hover:bg-purple-500 hover:text-white px-4 py-1 bg-black ml-4 rounded-full text-white font-bold">
                 Login
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="border-2 border-dotted hover:bg-green-400 hover:text-white px-4 py-1 bg-purple-300 ml-2 text-white font-bold">
-                Register
               </button>
             </Link>
           </div>
